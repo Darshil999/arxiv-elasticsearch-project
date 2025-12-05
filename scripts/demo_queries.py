@@ -176,10 +176,8 @@ def demo_hnsw_vector_search(client: Elasticsearch, index_name: str):
         # Get a sample document
         sample = client.search(
             index=index_name,
-            body={
-                "size": 1,
-                "query": {"match_all": {}}
-            }
+            size=1,
+            query={"match_all": {}}
         )
         
         if sample['hits']['hits']:
@@ -196,16 +194,14 @@ def demo_hnsw_vector_search(client: Elasticsearch, index_name: str):
                 
                 knn_results = client.search(
                     index=index_name,
-                    body={
-                        "size": 5,
-                        "knn": {
-                            "field": "abstract_vector",
-                            "query_vector": query_vector,
-                            "k": 5,
-                            "num_candidates": 100
-                        },
-                        "_source": ["title", "categories", "authors"]
-                    }
+                    size=5,
+                    knn={
+                        "field": "abstract_vector",
+                        "query_vector": query_vector,
+                        "k": 5,
+                        "num_candidates": 100
+                    },
+                    source=["title", "categories", "authors"]
                 )
                 
                 print("\nSimilar papers found:")
@@ -232,12 +228,10 @@ def demo_hnsw_vector_search(client: Elasticsearch, index_name: str):
         # First, get embedding for search text (we'll use a document that matches)
         text_match = client.search(
             index=index_name,
-            body={
-                "size": 1,
-                "query": {
-                    "match": {
-                        "abstract": search_text
-                    }
+            size=1,
+            query={
+                "match": {
+                    "abstract": search_text
                 }
             }
         )
@@ -249,31 +243,29 @@ def demo_hnsw_vector_search(client: Elasticsearch, index_name: str):
                 # Hybrid search combining text and vector
                 hybrid_results = client.search(
                     index=index_name,
-                    body={
-                        "size": 5,
-                        "query": {
-                            "bool": {
-                                "should": [
-                                    {
-                                        "match": {
-                                            "abstract": {
-                                                "query": search_text,
-                                                "boost": 1.0
-                                            }
+                    size=5,
+                    query={
+                        "bool": {
+                            "should": [
+                                {
+                                    "match": {
+                                        "abstract": {
+                                            "query": search_text,
+                                            "boost": 1.0
                                         }
                                     }
-                                ]
-                            }
-                        },
-                        "knn": {
-                            "field": "abstract_vector",
-                            "query_vector": query_vector,
-                            "k": 5,
-                            "num_candidates": 100,
-                            "boost": 1.0
-                        },
-                        "_source": ["title", "categories"]
-                    }
+                                }
+                            ]
+                        }
+                    },
+                    knn={
+                        "field": "abstract_vector",
+                        "query_vector": query_vector,
+                        "k": 5,
+                        "num_candidates": 100,
+                        "boost": 1.0
+                    },
+                    source=["title", "categories"]
                 )
                 
                 print("\nHybrid search results:")
@@ -318,7 +310,7 @@ def demo_snapshot_restore(client: Elasticsearch, index_name: str):
             # Create repository
             client.snapshot.create_repository(
                 name=repo_name,
-                body={
+                repository={
                     "type": "fs",
                     "settings": {
                         "location": repo_path,
@@ -344,7 +336,7 @@ def demo_snapshot_restore(client: Elasticsearch, index_name: str):
         response = client.snapshot.create(
             repository=repo_name,
             snapshot=snapshot_name,
-            body={"indices": index_name},
+            indices=index_name,
             wait_for_completion=True
         )
         print(f"Snapshot created successfully!")
@@ -412,16 +404,14 @@ def run_sample_queries(client: Elasticsearch, index_name: str):
     try:
         results = client.search(
             index=index_name,
-            body={
-                "size": 3,
-                "query": {
-                    "multi_match": {
-                        "query": "machine learning",
-                        "fields": ["title^2", "abstract"]
-                    }
-                },
-                "_source": ["title", "categories"]
-            }
+            size=3,
+            query={
+                "multi_match": {
+                    "query": "machine learning",
+                    "fields": ["title^2", "abstract"]
+                }
+            },
+            source=["title", "categories"]
         )
         
         print(f"Found {results['hits']['total']['value']} papers")
@@ -438,15 +428,13 @@ def run_sample_queries(client: Elasticsearch, index_name: str):
     try:
         results = client.search(
             index=index_name,
-            body={
-                "size": 3,
-                "query": {
-                    "term": {
-                        "categories": "cs.AI"
-                    }
-                },
-                "_source": ["title", "categories"]
-            }
+            size=3,
+            query={
+                "term": {
+                    "categories": "cs.AI"
+                }
+            },
+            source=["title", "categories"]
         )
         
         print(f"Found {results['hits']['total']['value']} papers")
@@ -463,14 +451,12 @@ def run_sample_queries(client: Elasticsearch, index_name: str):
     try:
         results = client.search(
             index=index_name,
-            body={
-                "size": 0,
-                "aggs": {
-                    "categories": {
-                        "terms": {
-                            "field": "categories",
-                            "size": 10
-                        }
+            size=0,
+            aggs={
+                "categories": {
+                    "terms": {
+                        "field": "categories",
+                        "size": 10
                     }
                 }
             }

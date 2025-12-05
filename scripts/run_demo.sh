@@ -123,7 +123,7 @@ setup_python() {
     fi
     
     print_step "Activating virtual environment..."
-    source venv/bin/activate
+    . venv/bin/activate
     
     print_step "Installing dependencies..."
     pip install -q -r requirements.txt
@@ -135,7 +135,7 @@ setup_python() {
 prepare_data() {
     print_section "Preparing Dataset"
     
-    source venv/bin/activate
+    . venv/bin/activate
     
     print_step "Downloading/Creating dataset..."
     python scripts/download_dataset.py
@@ -150,7 +150,7 @@ prepare_data() {
 ingest_data() {
     print_section "Ingesting Data into Elasticsearch"
     
-    source venv/bin/activate
+    . venv/bin/activate
     
     print_step "Running data ingestion..."
     python scripts/ingest_data.py
@@ -237,7 +237,7 @@ demo_snapshot() {
 interactive_demo() {
     print_section "Running Interactive Demo"
     
-    source venv/bin/activate
+    . venv/bin/activate
     python scripts/demo_queries.py
 }
 

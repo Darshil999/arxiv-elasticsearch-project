@@ -78,7 +78,7 @@ def register_snapshot_repository(
     
     response = client.snapshot.create_repository(
         name=repo_name,
-        body={
+        repository={
             "type": "fs",
             "settings": {
                 "location": repo_path,
@@ -117,14 +117,12 @@ def create_snapshot(
     
     logger.info(f"Creating snapshot '{snapshot_name}' in repository '{repo_name}'...")
     
-    body = {}
-    if indices:
-        body["indices"] = ",".join(indices)
+    indices_str = ",".join(indices) if indices else None
     
     response = client.snapshot.create(
         repository=repo_name,
         snapshot=snapshot_name,
-        body=body,
+        indices=indices_str,
         wait_for_completion=wait_for_completion
     )
     
@@ -240,17 +238,14 @@ def restore_snapshot(
     """
     logger.info(f"Restoring snapshot '{snapshot_name}'...")
     
-    body = {}
-    if indices:
-        body["indices"] = ",".join(indices)
-    if rename_pattern and rename_replacement:
-        body["rename_pattern"] = rename_pattern
-        body["rename_replacement"] = rename_replacement
+    indices_str = ",".join(indices) if indices else None
     
     response = client.snapshot.restore(
         repository=repo_name,
         snapshot=snapshot_name,
-        body=body,
+        indices=indices_str,
+        rename_pattern=rename_pattern,
+        rename_replacement=rename_replacement,
         wait_for_completion=wait_for_completion
     )
     

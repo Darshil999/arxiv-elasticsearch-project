@@ -188,14 +188,15 @@ def bulk_index_papers(
         batch = papers[i:i + batch_size]
         
         try:
-            success, failed = bulk(
+            # When stats_only=True, bulk() returns (success_count, failed_count) integers
+            success_count, failed_count = bulk(
                 client,
                 generate_actions(batch, index_name),
                 raise_on_error=False,
                 stats_only=True
             )
-            total_indexed += success
-            total_errors += failed
+            total_indexed += success_count
+            total_errors += failed_count
             
         except BulkIndexError as e:
             logger.error(f"Bulk index error: {e}")
