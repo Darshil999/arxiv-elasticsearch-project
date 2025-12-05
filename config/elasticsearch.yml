@@ -1,0 +1,36 @@
+# Elasticsearch Configuration
+# This file provides additional custom configuration options
+
+# Cluster Settings
+cluster.name: arxiv-cluster
+node.name: ${NODE_NAME}
+
+# Network Settings
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# Discovery Settings
+discovery.seed_hosts: ["es01", "es02", "es03"]
+cluster.initial_master_nodes: ["es01", "es02", "es03"]
+
+# Memory Settings
+bootstrap.memory_lock: true
+
+# Security Settings (disabled for demo purposes)
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+
+# Snapshot Repository Path
+path.repo: ["/usr/share/elasticsearch/snapshots"]
+
+# Index Settings
+action.auto_create_index: true
+action.destructive_requires_name: true
+
+# Cross-cluster Search (optional)
+# search.remote.connect: false
+
+# Thread Pool Settings (optional tuning)
+# thread_pool.search.size: 8
+# thread_pool.search.queue_size: 1000
