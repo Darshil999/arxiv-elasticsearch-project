@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local environment files
+.env
+
+# Data files (large datasets)
+data/*.json
+data/*.csv
+data/*.zip
+!data/.gitkeep
+
+# Snapshot files
+snapshots/*
+!snapshots/.gitkeep
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes (if created locally)
+esdata*/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
