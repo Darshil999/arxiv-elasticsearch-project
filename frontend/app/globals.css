@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-ink-950: #07090d;
+  --color-ink-900: #0c0f15;
+  --color-ink-850: #10141c;
+  --color-ink-800: #161b25;
+  --color-ink-700: #232a38;
+  --color-ink-600: #343d4f;
+  --color-accent: #7c9cff;
+  --color-accent-strong: #5b7cff;
+  --color-signal: #4ade80;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-ink-950);
+}
+
+body {
+  background: var(--color-ink-950);
+  color: #e6e9f0;
+}
+
+/* Faint technical grid behind the hero, fading out towards the bottom. */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 75%);
+}
+
+.glow {
+  background: radial-gradient(ellipse 50% 40% at 50% 0%, rgb(91 124 255 / 0.18), transparent 70%);
+}
+
+::selection {
+  background: rgb(124 156 255 / 0.35);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-ink-800);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.04), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after {
+    animation: none;
+  }
+}

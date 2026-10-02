@@ -1,0 +1,46 @@
+# Render Blueprint: deploys the whole app (both on Render's free tier).
+# Render dashboard -> New -> Blueprint -> select this repo. See DEPLOYMENT.md, Step 4.
+#
+#   arxiv-semantic-search       static site   Next.js export, served from Render's CDN (never sleeps)
+#   arxiv-semantic-search-api   web service   FastAPI + embedding model in Docker (free instance)
+#
+# The two services reference each other's public URLs (API URL for the browser, site URL for
+# CORS). Render can't inject public URLs across services, so both are entered when the
+# Blueprint is created (sync: false) - see DEPLOYMENT.md.
+services:
+  - type: web
+    name: arxiv-semantic-search-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: QDRANT_URL
+        sync: false # your Qdrant Cloud cluster URL
+      - key: QDRANT_API_KEY
+        sync: false # your Qdrant Cloud API key (secret)
+      - key: QDRANT_COLLECTION
+        value: arxiv_papers
+      - key: FRONTEND_URL
+        sync: false # the static site's URL, e.g. https://arxiv-semantic-search.onrender.com
+
+  - type: web
+    name: arxiv-semantic-search
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: out
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        sync: false # the API's URL, e.g. https://arxiv-semantic-search-api.onrender.com
+    headers:
+      - path: /_next/static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin

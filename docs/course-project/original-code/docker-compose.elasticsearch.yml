@@ -1,0 +1,84 @@
+version: '3.8'
+services:
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: es01
+    environment:
+      - node.name=es01
+      - cluster.name=arxiv-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - path.repo=/mnt/es-snapshots
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+      - ./snapshots:/mnt/es-snapshots
+    ports:
+      - "9200:9200"
+    networks:
+      - esnet
+
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=arxiv-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - path.repo=/mnt/es-snapshots
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+      - ./snapshots:/mnt/es-snapshots
+    networks:
+      - esnet
+
+  es03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    container_name: es03
+    environment:
+      - node.name=es03
+      - cluster.name=arxiv-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - path.repo=/mnt/es-snapshots
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata03:/usr/share/elasticsearch/data
+      - ./snapshots:/mnt/es-snapshots
+    networks:
+      - esnet
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es01:9200
+    ports:
+      - "5601:5601"
+    networks:
+      - esnet
+
+volumes:
+  esdata01:
+  esdata02:
+  esdata03:
+
+networks:
+  esnet:

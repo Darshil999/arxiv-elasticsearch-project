@@ -1,0 +1,10 @@
+# API runtime
+fastapi==0.141.1
+uvicorn[standard]==0.54.0
+pydantic-settings==2.15.0
+httpx==0.28.1
+numpy==2.5.3
+onnxruntime==1.30.0
+tokenizers==0.23.2
+# Data scripts in ../scripts (also runnable inside the API image)
+tqdm==4.70.1
