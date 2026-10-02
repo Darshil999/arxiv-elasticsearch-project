@@ -6,7 +6,7 @@ A full-stack semantic search engine for arXiv computer-science papers. Describe 
 English, like *"robots learning to grasp objects"* or *"making LLMs reason step by step"*. The app
 finds the papers whose content is closest in meaning, even when they share none of your words.
 
-**Live demo:** `https://<your-site>.onrender.com` · **API docs:** `https://<your-api>.onrender.com/docs`
+**Live demo:** Local Setup Available below · **API docs:** Local Setup Available below
 
 <p align="center">
   <img src="docs/screenshots/results.png" alt="Search results" width="760" />
